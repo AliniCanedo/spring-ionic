@@ -13,6 +13,7 @@ import com.alinicanedo.ecommerce.domain.Cidade;
 import com.alinicanedo.ecommerce.domain.Cliente;
 import com.alinicanedo.ecommerce.domain.Endereco;
 import com.alinicanedo.ecommerce.domain.Estado;
+import com.alinicanedo.ecommerce.domain.ItemPedido;
 import com.alinicanedo.ecommerce.domain.Pagamento;
 import com.alinicanedo.ecommerce.domain.PagamentoComBoleto;
 import com.alinicanedo.ecommerce.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.alinicanedo.ecommerce.repositories.CidadeRepository;
 import com.alinicanedo.ecommerce.repositories.ClienteRepository;
 import com.alinicanedo.ecommerce.repositories.EnderecoRepository;
 import com.alinicanedo.ecommerce.repositories.EstadoRepository;
+import com.alinicanedo.ecommerce.repositories.ItemPedidoRepository;
 import com.alinicanedo.ecommerce.repositories.PagamentoRepository;
 import com.alinicanedo.ecommerce.repositories.PedidoRepository;
 import com.alinicanedo.ecommerce.repositories.ProdutoRepository;
@@ -55,6 +57,9 @@ public class EcommerceApplication implements CommandLineRunner {
 
 	@Autowired
 	public PagamentoRepository pagamentoRepository;
+
+	@Autowired
+	public ItemPedidoRepository itemPedidoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(EcommerceApplication.class, args);
@@ -119,6 +124,19 @@ public class EcommerceApplication implements CommandLineRunner {
 
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 
 	}
 
