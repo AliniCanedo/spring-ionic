@@ -18,7 +18,6 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 import com.alinicanedo.ecommerce.domain.enums.TipoCliente;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Cliente implements Serializable {
@@ -40,6 +39,8 @@ public class Cliente implements Serializable {
 	@ElementCollection
 	@CollectionTable(name = "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
+
+	private List<Pedido> pedidos = new ArrayList<>();
 
 	public Cliente() {
 
@@ -110,6 +111,13 @@ public class Cliente implements Serializable {
 	public void setTelefones(Set<String> telefones) {
 		this.telefones = telefones;
 	}
+	public List<Pedido> getPedidos() {
+		return pedidos;
+	}
+
+	public void setPedidos(List<Pedido> pedidos) {
+		this.pedidos = pedidos;
+	}
 
 	@Override
 	public int hashCode() {
@@ -135,4 +143,6 @@ public class Cliente implements Serializable {
 			return false;
 		return true;
 	}
+
+
 }
