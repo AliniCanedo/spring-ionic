@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import java.util.List;
 
 import com.alinicanedo.ecommerce.domain.enums.TipoCliente;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class Cliente implements Serializable {
@@ -40,7 +41,8 @@ public class Cliente implements Serializable {
 	@CollectionTable(name = "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
 
-	@OneToMany(mappedBy="cliente")
+	@JsonBackReference
+	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 
 	public Cliente() {
@@ -112,6 +114,7 @@ public class Cliente implements Serializable {
 	public void setTelefones(Set<String> telefones) {
 		this.telefones = telefones;
 	}
+
 	public List<Pedido> getPedidos() {
 		return pedidos;
 	}
@@ -144,6 +147,5 @@ public class Cliente implements Serializable {
 			return false;
 		return true;
 	}
-
 
 }
