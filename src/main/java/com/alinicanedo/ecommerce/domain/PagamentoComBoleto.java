@@ -2,8 +2,11 @@ package com.alinicanedo.ecommerce.domain;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+
 import com.alinicanedo.ecommerce.domain.enums.EstadoPagamento;
 
+@Entity
 public class PagamentoComBoleto extends Pagamento {
 	/**
 	 * 

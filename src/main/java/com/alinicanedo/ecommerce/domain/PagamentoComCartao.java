@@ -1,7 +1,10 @@
 package com.alinicanedo.ecommerce.domain;
 
+import javax.persistence.Entity;
+
 import com.alinicanedo.ecommerce.domain.enums.EstadoPagamento;
 
+@Entity
 public class PagamentoComCartao extends Pagamento {
 	/**
 	 * 
