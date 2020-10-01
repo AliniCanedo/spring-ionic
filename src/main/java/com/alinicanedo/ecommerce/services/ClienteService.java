@@ -18,7 +18,6 @@ import com.alinicanedo.ecommerce.domain.Endereco;
 import com.alinicanedo.ecommerce.domain.enums.TipoCliente;
 import com.alinicanedo.ecommerce.dto.ClienteDTO;
 import com.alinicanedo.ecommerce.dto.ClienteNewDTO;
-import com.alinicanedo.ecommerce.repositories.CidadeRepository;
 import com.alinicanedo.ecommerce.repositories.ClienteRepository;
 import com.alinicanedo.ecommerce.repositories.EnderecoRepository;
 import com.alinicanedo.ecommerce.services.exceptions.DataIntegrityException;
@@ -28,9 +27,6 @@ import com.alinicanedo.ecommerce.services.exceptions.ObjectNotFoundException;
 public class ClienteService {
 	@Autowired
 	private ClienteRepository repo;
-
-	@Autowired
-	private CidadeRepository cidadeRepository;
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
@@ -79,9 +75,9 @@ public class ClienteService {
 
 	public Cliente fromDTO(ClienteNewDTO objDto) {
 		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
-				TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
-		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
-		Endereco end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(),
+				TipoCliente.toEnum(objDto.getTipo()));
+		Cidade cid = new Cidade(null, null, null);
+		Endereco end = new Endereco(null, objDto.getLougradouro(), objDto.getNumero(), objDto.getComplementos(),
 				objDto.getBairro(), objDto.getCep(), cli, cid);
 		cli.getEnderecos().add(end);
 		cli.getTelefones().add(objDto.getTelefone1());
