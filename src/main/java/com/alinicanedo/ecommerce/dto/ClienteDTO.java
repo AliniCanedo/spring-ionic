@@ -8,7 +8,10 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.Length;
 
 import com.alinicanedo.ecommerce.domain.Cliente;
+import com.alinicanedo.ecommerce.services.validation.ClienteUpdate;
 
+
+@ClienteUpdate
 public class ClienteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
