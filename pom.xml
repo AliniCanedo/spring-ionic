@@ -59,6 +59,11 @@
 			<version>4.0.2.GA</version>
 			<artifactId>hibernate-validator-legacy</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
