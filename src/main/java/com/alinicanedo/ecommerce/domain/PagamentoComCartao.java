@@ -3,8 +3,10 @@ package com.alinicanedo.ecommerce.domain;
 import javax.persistence.Entity;
 
 import com.alinicanedo.ecommerce.domain.enums.EstadoPagamento;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @Entity
+@JsonTypeName("pagamentoComCartao")
 public class PagamentoComCartao extends Pagamento {
 	/**
 	 * 
