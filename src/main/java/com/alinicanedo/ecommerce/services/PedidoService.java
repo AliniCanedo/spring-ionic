@@ -4,8 +4,12 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.alinicanedo.ecommerce.domain.Cliente;
 import com.alinicanedo.ecommerce.domain.ItemPedido;
 import com.alinicanedo.ecommerce.domain.PagamentoComBoleto;
 import com.alinicanedo.ecommerce.domain.Pedido;
@@ -13,6 +17,8 @@ import com.alinicanedo.ecommerce.domain.enums.EstadoPagamento;
 import com.alinicanedo.ecommerce.repositories.ItemPedidoRepository;
 import com.alinicanedo.ecommerce.repositories.PagamentoRepository;
 import com.alinicanedo.ecommerce.repositories.PedidoRepository;
+import com.alinicanedo.ecommerce.security.UserSS;
+import com.alinicanedo.ecommerce.services.exceptions.AuthorizationException;
 import com.alinicanedo.ecommerce.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -34,7 +40,7 @@ public class PedidoService {
 
 	@Autowired
 	private ClienteService clienteService;
-	
+
 	@Autowired
 	private EmailService emailService;
 
@@ -65,5 +71,15 @@ public class PedidoService {
 		itemPedidoRepository.saveAll(obj.getItens());
 		emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
+	}
+
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente = clienteService.find(user.getId());
+		return repo.findByCliente(cliente, pageRequest);
 	}
 }
