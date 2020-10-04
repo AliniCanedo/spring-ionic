@@ -16,12 +16,15 @@ import org.springframework.stereotype.Service;
 import com.alinicanedo.ecommerce.domain.Cidade;
 import com.alinicanedo.ecommerce.domain.Cliente;
 import com.alinicanedo.ecommerce.domain.Endereco;
+import com.alinicanedo.ecommerce.domain.enums.Perfil;
 import com.alinicanedo.ecommerce.domain.enums.TipoCliente;
 import com.alinicanedo.ecommerce.dto.ClienteDTO;
 import com.alinicanedo.ecommerce.dto.ClienteNewDTO;
 import com.alinicanedo.ecommerce.repositories.CidadeRepository;
 import com.alinicanedo.ecommerce.repositories.ClienteRepository;
 import com.alinicanedo.ecommerce.repositories.EnderecoRepository;
+import com.alinicanedo.ecommerce.security.UserSS;
+import com.alinicanedo.ecommerce.services.exceptions.AuthorizationException;
 import com.alinicanedo.ecommerce.services.exceptions.DataIntegrityException;
 import com.alinicanedo.ecommerce.services.exceptions.ObjectNotFoundException;
 
@@ -29,10 +32,10 @@ import com.alinicanedo.ecommerce.services.exceptions.ObjectNotFoundException;
 public class ClienteService {
 	@Autowired
 	private ClienteRepository repo;
-	
+
 	@Autowired
 	private CidadeRepository cidadeRepository;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder pe;
 
@@ -40,6 +43,12 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 
 	public Cliente find(Integer id) {
+
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
@@ -82,15 +91,17 @@ public class ClienteService {
 	}
 
 	public Cliente fromDTO(ClienteNewDTO objDto) {
-		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
+		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
+				TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
 		Cidade cid = new Cidade();
-		Endereco end = new Endereco(null, objDto.getLougradouro(), objDto.getNumero(), objDto.getComplementos(), objDto.getBairro(), objDto.getCep(), cli, cid);
+		Endereco end = new Endereco(null, objDto.getLougradouro(), objDto.getNumero(), objDto.getComplementos(),
+				objDto.getBairro(), objDto.getCep(), cli, cid);
 		cli.getEnderecos().add(end);
 		cli.getTelefones().add(objDto.getTelefone1());
-		if (objDto.getTelefone2()!=null) {
+		if (objDto.getTelefone2() != null) {
 			cli.getTelefones().add(objDto.getTelefone2());
 		}
-		if (objDto.getTelefone3()!=null) {
+		if (objDto.getTelefone3() != null) {
 			cli.getTelefones().add(objDto.getTelefone3());
 		}
 		return cli;
