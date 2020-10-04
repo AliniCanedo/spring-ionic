@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
-
-import com.amazonaws.services.iotevents.model.Payload;
+import javax.validation.Payload;
 
 @Constraint(validatedBy = ClienteInsertValidator.class)
 @Target({ ElementType.TYPE })
