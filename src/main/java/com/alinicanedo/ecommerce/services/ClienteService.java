@@ -33,27 +33,25 @@ import com.alinicanedo.ecommerce.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
-	@Autowired
-	private ClienteRepository repo;
-	
-	@Autowired
-	private ClienteService clienteService;
 
 	@Autowired
-	private S3Service s3Service;
+	private ClienteRepository repo;
+
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder pe;
 
 	@Autowired
-	private EnderecoRepository enderecoRepository;
-	
+	private S3Service s3Service;
+
 	@Autowired
 	private ImageService imageService;
-		
+
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
-	
+
 	@Value("${img.profile.size}")
 	private Integer size;
 
@@ -88,12 +86,26 @@ public class ClienteService {
 		try {
 			repo.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir pq há entidades relacionadas");
+			throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionados");
 		}
 	}
 
 	public List<Cliente> findAll() {
 		return repo.findAll();
+	}
+
+	public Cliente findByEmail(String email) {
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+
+		Cliente obj = repo.findByEmail(email);
+		if (obj == null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! Id: " + user.getId() + ", Tipo: " + Cliente.class.getName());
+		}
+		return obj;
 	}
 
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
@@ -108,7 +120,11 @@ public class ClienteService {
 	public Cliente fromDTO(ClienteNewDTO objDto) {
 		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
 				TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
+		
 		Cidade cid = new Cidade();
+		
+		
+		
 		Endereco end = new Endereco(null, objDto.getLougradouro(), objDto.getNumero(), objDto.getComplementos(),
 				objDto.getBairro(), objDto.getCep(), cli, cid);
 		cli.getEnderecos().add(end);

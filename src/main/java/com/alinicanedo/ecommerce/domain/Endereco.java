@@ -18,9 +18,9 @@ public class Endereco implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	private String lougradouro;
+	private String logradouro;
 	private String numero;
-	private String complementos;
+	private String complemento;
 	private String bairro;
 	private String cep;
 
@@ -29,21 +29,24 @@ public class Endereco implements Serializable {
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
 
-	public Endereco() {
+	@ManyToOne
+	@JoinColumn(name = "cidade_id")
+	private Cidade cidade;
 
+	public Endereco() {
 	}
 
-	public Endereco(Integer id, String lougradouro, String numero, String complementos, String bairro, String cep,
-			Cliente clientes, Cidade cidade) {
+	public Endereco(Integer id, String logradouro, String numero, String complemento, String bairro, String cep,
+			Cliente cliente, Cidade cidade) {
 		super();
 		this.id = id;
-		this.lougradouro = lougradouro;
+		this.logradouro = logradouro;
 		this.numero = numero;
-		this.complementos = complementos;
+		this.complemento = complemento;
 		this.bairro = bairro;
 		this.cep = cep;
-		this.cliente = clientes;
-
+		this.cliente = cliente;
+		this.setCidade(cidade);
 	}
 
 	public Integer getId() {
@@ -54,12 +57,12 @@ public class Endereco implements Serializable {
 		this.id = id;
 	}
 
-	public String getLougradouro() {
-		return lougradouro;
+	public String getLogradouro() {
+		return logradouro;
 	}
 
-	public void setLougradouro(String lougradouro) {
-		this.lougradouro = lougradouro;
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
 	}
 
 	public String getNumero() {
@@ -70,12 +73,12 @@ public class Endereco implements Serializable {
 		this.numero = numero;
 	}
 
-	public String getComplementos() {
-		return complementos;
+	public String getComplemento() {
+		return complemento;
 	}
 
-	public void setComplementos(String complementos) {
-		this.complementos = complementos;
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 
 	public String getBairro() {
@@ -94,12 +97,20 @@ public class Endereco implements Serializable {
 		this.cep = cep;
 	}
 
-	public Cliente getClientes() {
+	public Cliente getCliente() {
 		return cliente;
 	}
 
-	public void setClientes(Cliente clientes) {
-		this.cliente = clientes;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public Cidade getCidade() {
+		return cidade;
+	}
+
+	public void setCidade(Cidade cidade) {
+		this.cidade = cidade;
 	}
 
 	@Override
