@@ -3,16 +3,14 @@ package com.alinicanedo.ecommerce.dto;
 import java.io.Serializable;
 
 import com.alinicanedo.ecommerce.domain.Produto;
-import com.alinicanedo.ecommerce.services.validation.ClienteUpdate;
 
-@ClienteUpdate
 public class ProdutoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String nome;
 	private Double preco;
-
+	
 	public ProdutoDTO() {
 	}
 
@@ -21,7 +19,7 @@ public class ProdutoDTO implements Serializable {
 		nome = obj.getNome();
 		preco = obj.getPreco();
 	}
-
+	
 	public Integer getId() {
 		return id;
 	}
